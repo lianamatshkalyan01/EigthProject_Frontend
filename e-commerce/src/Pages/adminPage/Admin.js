@@ -8,7 +8,7 @@ export default function Admin() {
   const navigate = useNavigate()
   const handleLogOut = () =>{
     localStorage.removeItem('token')
-      navigate('/login')
+      navigate('/')
   }
   return (
     <div>

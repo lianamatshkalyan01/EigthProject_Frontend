@@ -19,10 +19,25 @@ const theme = createTheme();
 export default function Register() {
     const[email, setEmail]=useState('')
     const[password, setPassword]=useState('')
+    const[emailError, setEmailError] = useState('')
     const navigate=useNavigate()
 
     async function handleSubmitRegister(e){
         e.preventDefault()
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+        // const number = "0123456789"
+        if(!email || email === null){
+          setEmailError("Email is required")
+          return
+        }
+        else if(!email.includes('@')){
+          setEmailError("Email is missing '@' symbol")
+          return
+        }
+        else if(!emailRegex.test(email)){
+          setEmailError("invalid email")
+          return
+        }
         try{
             const response= await fetch("http://localhost:5000/register", {
                 method:"POST",
@@ -36,6 +51,7 @@ export default function Register() {
             })
             const data= await response.json()
             console.log(data, 'data')
+            navigate('/login')
         }catch(err){
             console.log(err)
         }
@@ -71,6 +87,11 @@ export default function Register() {
          autoFocus
          onChange={(e)=>setEmail(e.target.value)}
         />
+        {emailError && (
+              <Typography variant="body2" color="error" sx={{ mt: -1, mb: 1 }}>
+                {emailError}
+              </Typography>
+            )}
         <TextField
          margin="normal"
          required
@@ -85,7 +106,7 @@ export default function Register() {
         />
     <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
     <Stack spacing={2} direction="row">
-      <Button onClick={()=>navigate("/login")}
+      <Button 
       variant="contained"
       type="submit"
       fullWidth

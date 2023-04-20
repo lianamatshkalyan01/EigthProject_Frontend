@@ -13,12 +13,14 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {useState} from "react"
 import { useNavigate } from 'react-router-dom';
+import { decodeToken } from "react-jwt";
 
 const theme = createTheme();
 export default function Login() {
     const[email, setEmail]=useState('')
     const[password, setPassword]=useState("")
     const navigate=useNavigate()
+    
 
   async function handleSubmitLogin(e){
         e.preventDefault()
@@ -36,7 +38,9 @@ export default function Login() {
             const data = await response.json()
             console.log(data, "data")
             localStorage.setItem('token', data.jwt);
-            if (data.role === 'admin') {
+            const token = localStorage.getItem('token')
+           const decodedToken = decodeToken(token);
+            if (decodedToken.role === 'admin') {
               navigate('/admin');
             } else{
               navigate('/user')
