@@ -16,6 +16,7 @@ import User from '../Pages/UserPage/User'
 import ProtectedRoute from './ProtectedRoute'
 import { decodeToken } from "react-jwt";
 import Home from '../Pages/HomePage/Home'
+import ProtectedRouteUser from './ProtectedRouteUser'
 
 export default function AppRoutes() {
   const token =localStorage.getItem('token')
@@ -37,7 +38,7 @@ export default function AppRoutes() {
         <Route path='createCategory' element={<ProtectedRoute>< CreateCategories/></ProtectedRoute>}/>
         <Route path='updateCategory/:id' element={<ProtectedRoute><EditCategories/></ProtectedRoute>}/>
         <Route path='deleteCategory/:id' element={<ProtectedRoute><DeleteCategories /></ProtectedRoute>}/>
-        <Route path='user' element={<ProtectedRoute>< User/></ProtectedRoute>} />
+        <Route path='user' element={<ProtectedRouteUser><User/></ProtectedRouteUser> } />
         </Route>
     </Routes>
     </div>

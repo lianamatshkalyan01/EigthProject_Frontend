@@ -20,12 +20,12 @@ export default function Register() {
     const[email, setEmail]=useState('')
     const[password, setPassword]=useState('')
     const[emailError, setEmailError] = useState('')
+    const[passwordError, setPasswordError] = useState('')
     const navigate=useNavigate()
 
     async function handleSubmitRegister(e){
         e.preventDefault()
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
-        // const number = "0123456789"
         if(!email || email === null){
           setEmailError("Email is required")
           return
@@ -36,6 +36,10 @@ export default function Register() {
         }
         else if(!emailRegex.test(email)){
           setEmailError("invalid email")
+          return
+        }
+        else if(!password || password === null){
+          setPasswordError("Password is required")
           return
         }
         try{
@@ -104,7 +108,11 @@ export default function Register() {
          autoFocus
          onChange={(e)=>setPassword(e.target.value)}
         />
-    <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
+        {passwordError && (
+              <Typography variant="body2" color="error" sx={{ mt: -1, mb: 1 }}>
+                {passwordError}
+              </Typography>
+            )}
     <Stack spacing={2} direction="row">
       <Button 
       variant="contained"

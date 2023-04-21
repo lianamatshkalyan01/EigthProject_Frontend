@@ -19,11 +19,24 @@ const theme = createTheme();
 export default function Login() {
     const[email, setEmail]=useState('')
     const[password, setPassword]=useState("")
+    const[emailError, setEmailError] = useState('')
+    const[passwordError, setPasswordError] = useState('')
     const navigate=useNavigate()
     
-
   async function handleSubmitLogin(e){
         e.preventDefault()
+        if(email.length === 0){
+          setEmailError("Email is required")
+          return
+        }
+        else if(!email ){
+          setEmailError("Email doesn't match")
+          return
+        }
+        else if(password.length === 0 ){
+          setPasswordError("Password is required")
+          return
+        }
         try{
             const response= await fetch("http://localhost:5000/login",{
                 method:"POST",
@@ -42,7 +55,7 @@ export default function Login() {
            const decodedToken = decodeToken(token);
             if (decodedToken.role === 'admin') {
               navigate('/admin');
-            } else{
+            } else if (decodedToken.role === 'user') {
               navigate('/user')
             }
         } catch(err){
@@ -82,7 +95,12 @@ export default function Login() {
          autoComplete="email"
          autoFocus
          onChange={(e)=>setEmail(e.target.value)}
-        />
+         />
+         {emailError && (
+          <Typography variant="body2" color="error" sx={{ mt: -1, mb: 1 }}>
+            {emailError}
+          </Typography>
+        )}
         <TextField
          margin="normal"
          required
@@ -95,6 +113,11 @@ export default function Login() {
          value={password}
          onChange={(e)=>setPassword(e.target.value)}
         />
+        {passwordError && (
+              <Typography variant="body2" color="error" sx={{ mt: -1, mb: 1 }}>
+                {passwordError} 
+              </Typography>
+            )}
     <Stack spacing={2} direction="row">
       <Button 
       variant="contained"
