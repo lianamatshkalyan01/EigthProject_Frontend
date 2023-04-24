@@ -1,14 +1,15 @@
 import React from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useState } from 'react'
-import { Box, Button, TextField } from '@mui/material'
+import { useState, useEffect } from 'react'
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 
 export default function EditServices() {
   const navigate=useNavigate()
   const {id}=useParams()
   const[name, setName]=useState('')
   const[price, setPrice]=useState('')
-  const[categoryId, setCategoryId]=useState("")
+  const[category_id, setCategoryId]=useState("")
+  const[categories, setCategories] = useState([])
 
   const submitUpdateService = (id)=>async(e)=>{
     e.preventDefault()
@@ -19,7 +20,7 @@ export default function EditServices() {
         body:JSON.stringify({
           name,
           price,
-          categoryId
+          category_id
         }),
         headers:{
           "Content-type": "application/json; charset=UTF-8", 
@@ -36,6 +37,13 @@ export default function EditServices() {
     setPrice('')
     setCategoryId('')
   }
+
+  useEffect(()=>{
+    fetch("http://localhost:5000/category")
+    .then(res =>res.json())
+    .then(data=>setCategories(data))
+  },[])
+
   return (
     <div>
       <Box component="form"
@@ -51,7 +59,21 @@ export default function EditServices() {
       autoComplete="off">
 <TextField id='name' required label="Name"  onChange={(e)=>setName(e.target.value)} />
 <TextField id='price' required label="Price"  onChange={(e)=>setPrice(e.target.value)} />
-<TextField id='CategoryId' required label="CategoryId" onChange={(e)=>setCategoryId(e.target.value)} />      
+<FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Category</InputLabel>
+        <Select
+        labelId="demo-simple-select-label"
+        value={category_id}
+        id="demo-simple-select"
+        label="Category"
+        onChange={(e)=>setCategoryId(e.target.value)}>
+          {categories.map((category)=>(
+            <MenuItem value={category.id} key={category.id}>
+              {category.name}
+            </MenuItem>
+          ))}
+        </Select>
+        </FormControl>     
 <Button variant="outlined" onClick={submitUpdateService(id)}> Update</Button>  
 <Button onClick={()=>navigate('/services')}>Back</Button>
       </Box>

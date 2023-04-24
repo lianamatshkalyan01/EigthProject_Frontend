@@ -38,7 +38,7 @@ export default function Services() {
             sx={{ width: "90%", margin: "50px auto" }}
             >
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
+                    <TableHead >
                         <TableRow>
                             <TableCell align="center">Name</TableCell>
                             <TableCell align="center">Price</TableCell>

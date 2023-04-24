@@ -1,13 +1,14 @@
-import { Button, TextField } from '@mui/material'
+import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export default function CreateServices() {
   const navigate = useNavigate()
   const[name, setName]=useState('')
   const[price, setPrice]=useState('')
-  const[categoryId, setCategoryId]=useState("")
+  const[category_id, setCategoryId]=useState("")
+  const[categories, setCategories] = useState([])
 
   async function submitCreateService(e){
     e.preventDefault()
@@ -18,7 +19,7 @@ export default function CreateServices() {
         body: JSON.stringify({
           name,
           price,
-          categoryId
+          category_id
         }),
         headers:{
         "Content-type": "application/json; charset=UTF-8",
@@ -34,6 +35,13 @@ export default function CreateServices() {
     setPrice('')
     setCategoryId('')
   }
+
+  useEffect(()=>{
+    fetch("http://localhost:5000/category")
+    .then(res =>res.json())
+    .then(data=>setCategories(data))
+  },[])
+  
   return (
     <div>
       <Box component="form"
@@ -49,7 +57,21 @@ export default function CreateServices() {
       autoComplete="off">
         <TextField id='name' required label="Name" onChange={(e)=>setName(e.target.value)}></TextField>
         <TextField id='price' required label="Price" onChange={(e)=>setPrice(e.target.value)}></TextField>
-        <TextField id='CategoryId' required label="CategoryId" onChange={(e)=>setCategoryId(e.target.value)}></TextField>
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Category</InputLabel>
+        <Select  
+        labelId="demo-simple-select-label"
+        value={category_id}
+        id="demo-simple-select"
+        label="Category"
+        onChange={(e)=>setCategoryId(e.target.value)}>
+          {categories.map((category)=>(
+            <MenuItem value={category.id} key={category.id}>
+              {category.name}
+            </MenuItem>
+          ))}
+        </Select>
+        </FormControl>
         <Button variant="outlined" onClick={submitCreateService}>Create</Button>
         <Button onClick={()=>navigate('/services')}>Back</Button>
       </Box>

@@ -36,10 +36,10 @@ function Categories() {
             component={Paper}
             sx={{ width: "90%", margin: "50px auto" }}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align="center">Name</TableCell>
-                            <TableCell align="center">Options</TableCell>
+                    <TableHead >
+                        <TableRow >
+                            <TableCell sx={{fontWeight:"bold", fontSize:"20px"}}>Name</TableCell>
+                            <TableCell sx={{fontWeight:"bold", fontSize:"20px"}}>Options</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
