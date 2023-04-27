@@ -11,7 +11,6 @@ import { useNavigate } from 'react-router-dom';
 export default function Services() {
     const[services, setService] = useState([])
     const navigate=useNavigate()
-    console.log(services)
     useEffect(()=>{
         fetch("http://localhost:5000/services")
         .then((res)=> res.json())

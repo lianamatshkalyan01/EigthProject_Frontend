@@ -1,4 +1,4 @@
-import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
+import { Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -9,10 +9,15 @@ export default function CreateServices() {
   const[price, setPrice]=useState('')
   const[category_id, setCategoryId]=useState("")
   const[categories, setCategories] = useState([])
+  const[err, setErr]=useState("")
 
   async function submitCreateService(e){
     e.preventDefault()
     const token = localStorage.getItem('token')
+    if(name.trim() === "" || price.trim() === "" || category_id === ""){
+      setErr("Fill all fields")
+      return
+    }
     try{
       const response = await fetch('http://localhost:5000/services/new', {
         method: "POST",
@@ -26,8 +31,9 @@ export default function CreateServices() {
         "Authorization":token
       }
       })
-      const data = await response.json()
-      console.log(data, 'data')
+     if(!response.ok){
+        setErr("Not Found")
+     }
     } catch(err){
         console.log(err)
     }
@@ -73,6 +79,9 @@ export default function CreateServices() {
         </Select>
         </FormControl>
         <Button variant="outlined" onClick={submitCreateService}>Create</Button>
+        <Typography component="p" color="red">
+          {err ? err : null }
+        </Typography>
         <Button onClick={()=>navigate('/services')}>Back</Button>
       </Box>
     </div>

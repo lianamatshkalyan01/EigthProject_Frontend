@@ -1,13 +1,18 @@
-import { Box, TextField, Button } from '@mui/material'
+import { Box, TextField, Button, Typography } from '@mui/material'
 import { useState} from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export default function CreateCategories() {
   const [name, setName]=useState('')
+  const[err, setErr] = useState('')
   const navigate=useNavigate()
   async function submitCreateCategory(e){
     e.preventDefault()
     const token = localStorage.getItem('token')
+    if(name.trim() === ""){
+      setErr("Fill all fields")
+      return
+    }
     try{
       const response = await fetch('http://localhost:5000/category/new', {
         method: "POST",
@@ -19,8 +24,9 @@ export default function CreateCategories() {
           "Authorization":token
         }
       })
-      const data = await response.json()
-      console.log(data, 'data')
+      if(!response.ok){
+        setErr("Not Found")
+      }
     } catch(err){
       console.log(err)
     }
@@ -41,6 +47,9 @@ export default function CreateCategories() {
       autoComplete="off">
         <TextField id='name' required label="Name" onChange={(e)=>setName(e.target.value)}>Name</TextField>
         <Button variant="outlined" onClick={submitCreateCategory} >Create</Button>
+        <Typography component="p" color="red">
+          {err ? err : null}
+        </Typography>
         <Button onClick={()=>navigate('/categories')}>Back</Button>
       </Box>
     </div>

@@ -1,35 +1,50 @@
-import { Box, Button, TextField } from '@mui/material'
-import {useState} from 'react'
+import { Box, Button, TextField, Typography  } from '@mui/material'
+import {useState, useEffect} from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 export default function EditCategories() {
-  const[name, setName] = useState('')
+  const[categories,setCategories]=useState({})
+  const[err, setErr]=useState('')
   const navigate = useNavigate()
   const {id} = useParams()
   const submitUpdateCategories = (id) => async(e)=>{
     e.preventDefault()
     const token = localStorage.getItem('token')
+    if(categories.name.trim() === ""){
+      setErr("Fill all fields")
+      return
+    }
     try{
       const response = await fetch(`http://localhost:5000/category/update/${id}`, {
         method:"PUT",
         body: JSON.stringify({
-          name
+          name: categories.name
         }),
         headers:{
           "Content-type": "application/json; charset=UTF-8", 
           "Authorization":token
         }
       })
-      const data = await response.json()
-      console.log(data, 'data')
+      if(!response.ok){
+        setErr("Not Found")
+      }
     }catch(err){
       console.log(err)
     }
-    setName('')
   }
+
+  useEffect(()=>{
+    fetch(`http://localhost:5000/category/${id}`)
+    .then(res=>res.json())
+    .then(data=>{
+      console.log(data)
+      setCategories(data)})
+  },[])
   
   return (
     <div>
+      {
+        categories.name !== undefined ?
       <Box component="form"
       sx={{
         '& > :not(style)': { m: 1, width: '41ch' },
@@ -41,10 +56,17 @@ export default function EditCategories() {
       }}
       noValidate
       autoComplete="off">
-        <TextField id='name' required label="Name" onChange={(e)=>setName(e.target.value)}/>
+        <TextField id='name' label="Name" variant="outlined" value={categories?.name} onChange={(e)=>setCategories((prevState)=>({
+          ...prevState,
+          name: e.target.value
+        }))}/>
         <Button variant="outlined" onClick={submitUpdateCategories(id)}>Update</Button>
+        <Typography component="p" color="red">
+        {err ? err : null}
+        </Typography>
         <Button onClick={()=>navigate('/categories')}>Back</Button>
-      </Box>
+      </Box> : <></>
+      }
     </div>
   )
 }
